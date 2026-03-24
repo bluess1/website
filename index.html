@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VELVET CASINO</title>
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- LOBBY -->
+  <div id="lobby" class="screen active">
+    <header class="lobby-header">
+      <div class="header-ornament">✦</div>
+      <h1 class="casino-name">VELVET<br/><span>CASINO</span></h1>
+      <div class="header-ornament">✦</div>
+    </header>
+
+    <div class="balance-display">
+      <span class="balance-label">YOUR BALANCE</span>
+      <span class="balance-amount" id="lobby-balance">$1,000</span>
+    </div>
+
+    <div class="games-grid">
+      <button class="game-card" onclick="openGame('slots')">
+        <div class="game-icon">🎰</div>
+        <div class="game-name">SLOTS</div>
+        <div class="game-desc">Classic one-armed bandit</div>
+        <div class="game-rtp">RTP 94%</div>
+      </button>
+      <button class="game-card" onclick="openGame('blackjack')">
+        <div class="game-icon">🃏</div>
+        <div class="game-name">BLACKJACK</div>
+        <div class="game-desc">Beat the dealer to 21</div>
+        <div class="game-rtp">RTP 99%</div>
+      </button>
+      <button class="game-card" onclick="openGame('roulette')">
+        <div class="game-icon">⚫</div>
+        <div class="game-name">ROULETTE</div>
+        <div class="game-desc">Spin the wheel of fortune</div>
+        <div class="game-rtp">RTP 97%</div>
+      </button>
+      <button class="game-card" onclick="openGame('dice')">
+        <div class="game-icon">🎲</div>
+        <div class="game-name">DICE</div>
+        <div class="game-desc">High / Low — your call</div>
+        <div class="game-rtp">RTP 98%</div>
+      </button>
+      <button class="game-card" onclick="openGame('crash')">
+        <div class="game-icon">📈</div>
+        <div class="game-name">CRASH</div>
+        <div class="game-desc">Cash out before it crashes</div>
+        <div class="game-rtp">RTP 97%</div>
+      </button>
+      <button class="game-card leaderboard-card" onclick="openGame('leaderboard')">
+        <div class="game-icon">🏆</div>
+        <div class="game-name">LEADERBOARD</div>
+        <div class="game-desc">Top players worldwide</div>
+        <div class="game-rtp">HALL OF FAME</div>
+      </button>
+    </div>
+
+    <div class="lobby-footer">
+      <button class="reset-btn" onclick="resetBalance()">↺ RESET BALANCE</button>
+      <span class="disclaimer">For entertainment only. Not real gambling.</span>
+    </div>
+  </div>
+
+  <!-- SLOTS -->
+  <div id="slots" class="screen game-screen">
+    <div class="game-topbar">
+      <button class="back-btn" onclick="closeGame('slots')">← LOBBY</button>
+      <span class="game-title-bar">🎰 SLOTS</span>
+      <span class="topbar-balance" id="slots-balance">$1,000</span>
+    </div>
+    <div class="game-content" id="slots-content"></div>
+  </div>
+
+  <!-- BLACKJACK -->
+  <div id="blackjack" class="screen game-screen">
+    <div class="game-topbar">
+      <button class="back-btn" onclick="closeGame('blackjack')">← LOBBY</button>
+      <span class="game-title-bar">🃏 BLACKJACK</span>
+      <span class="topbar-balance" id="blackjack-balance">$1,000</span>
+    </div>
+    <div class="game-content" id="blackjack-content"></div>
+  </div>
+
+  <!-- ROULETTE -->
+  <div id="roulette" class="screen game-screen">
+    <div class="game-topbar">
+      <button class="back-btn" onclick="closeGame('roulette')">← LOBBY</button>
+      <span class="game-title-bar">⚫ ROULETTE</span>
+      <span class="topbar-balance" id="roulette-balance">$1,000</span>
+    </div>
+    <div class="game-content" id="roulette-content"></div>
+  </div>
+
+  <!-- DICE -->
+  <div id="dice" class="screen game-screen">
+    <div class="game-topbar">
+      <button class="back-btn" onclick="closeGame('dice')">← LOBBY</button>
+      <span class="game-title-bar">🎲 DICE</span>
+      <span class="topbar-balance" id="dice-balance">$1,000</span>
+    </div>
+    <div class="game-content" id="dice-content"></div>
+  </div>
+
+  <!-- CRASH -->
+  <div id="crash" class="screen game-screen">
+    <div class="game-topbar">
+      <button class="back-btn" onclick="closeGame('crash')">← LOBBY</button>
+      <span class="game-title-bar">📈 CRASH</span>
+      <span class="topbar-balance" id="crash-balance">$1,000</span>
+    </div>
+    <div class="game-content" id="crash-content"></div>
+  </div>
+
+  <!-- LEADERBOARD -->
+  <div id="leaderboard" class="screen game-screen">
+    <div class="game-topbar">
+      <button class="back-btn" onclick="closeGame('leaderboard')">← LOBBY</button>
+      <span class="game-title-bar">🏆 LEADERBOARD</span>
+      <span class="topbar-balance" id="leaderboard-balance">$1,000</span>
+    </div>
+    <div class="game-content" id="leaderboard-content"></div>
+  </div>
+
+  <!-- WIN / LOSE OVERLAY -->
+  <div id="result-overlay" class="result-overlay hidden">
+    <div class="result-box">
+      <div class="result-icon" id="result-icon"></div>
+      <div class="result-text" id="result-text"></div>
+      <div class="result-amount" id="result-amount"></div>
+      <button onclick="closeOverlay()">CONTINUE</button>
+    </div>
+  </div>
+
+  <script src="js/state.js"></script>
+  <script src="js/slots.js"></script>
+  <script src="js/blackjack.js"></script>
+  <script src="js/roulette.js"></script>
+  <script src="js/dice.js"></script>
+  <script src="js/crash.js"></script>
+  <script src="js/leaderboard.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
