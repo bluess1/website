@@ -73,8 +73,62 @@
     <div class="game-topbar">
       <button class="back-btn" onclick="closeGame('slots')">← LOBBY</button>
       <span class="game-title-bar">🎰 SLOTS</span>
-      <span class="topbar-balance" id="slots-balance">$1,000</span>
+      <div class="topbar-right">
+        <span class="topbar-balance" id="slots-balance">$1,000</span>
+        <div id="topbar-lb-slots" class="topbar-lb"></div>
+      </div>
     </div>
+    <div class="game-content" id="slots-content"></div>
+  </div>
+
+  <!-- BLACKJACK -->
+  <div id="blackjack" class="screen game-screen">
+    <div class="game-topbar">
+      <button class="back-btn" onclick="closeGame('blackjack')">← LOBBY</button>
+      <span class="game-title-bar">🃏 BLACKJACK</span>
+      <div class="topbar-right">
+        <span class="topbar-balance" id="blackjack-balance">$1,000</span>
+        <div id="topbar-lb-blackjack" class="topbar-lb"></div>
+      </div>
+    </div>
+    <div class="game-content" id="blackjack-content"></div>
+  </div>
+
+  <!-- DICE -->
+  <div id="dice" class="screen game-screen">
+    <div class="game-topbar">
+      <button class="back-btn" onclick="closeGame('dice')">← LOBBY</button>
+      <span class="game-title-bar">🎲 DICE</span>
+      <div class="topbar-right">
+        <span class="topbar-balance" id="dice-balance">$1,000</span>
+        <div id="topbar-lb-dice" class="topbar-lb"></div>
+      </div>
+    </div>
+    <div class="game-content" id="dice-content"></div>
+  </div>
+
+  <!-- CRASH -->
+  <div id="crash" class="screen game-screen">
+    <div class="game-topbar">
+      <button class="back-btn" onclick="closeGame('crash')">← LOBBY</button>
+      <span class="game-title-bar">📈 CRASH</span>
+      <div class="topbar-right">
+        <span class="topbar-balance" id="crash-balance">$1,000</span>
+        <div id="topbar-lb-crash" class="topbar-lb"></div>
+      </div>
+    </div>
+    <div class="game-content" id="crash-content"></div>
+  </div>
+
+  <!-- LEADERBOARD -->
+  <div id="leaderboard" class="screen game-screen">
+    <div class="game-topbar">
+      <button class="back-btn" onclick="closeGame('leaderboard')">← LOBBY</button>
+      <span class="game-title-bar">🏆 LEADERBOARD</span>
+      <span class="topbar-balance" id="leaderboard-balance">$1,000</span>
+    </div>
+    <div class="game-content" id="leaderboard-content"></div>
+  </div>
     <div class="game-content" id="slots-content"></div>
   </div>
 
@@ -93,7 +147,10 @@
     <div class="game-topbar">
       <button class="back-btn" onclick="closeGame('roulette')">← LOBBY</button>
       <span class="game-title-bar">⚫ ROULETTE</span>
-      <span class="topbar-balance" id="roulette-balance">$1,000</span>
+      <div class="topbar-right">
+        <span class="topbar-balance" id="roulette-balance">$1,000</span>
+        <div id="topbar-lb" class="topbar-lb"></div>
+      </div>
     </div>
     <div class="game-content" id="roulette-content"></div>
   </div>
