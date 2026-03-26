@@ -9,6 +9,7 @@ const GAME_INITS = {
 };
 
 let currentGame = null;
+let sidebarChannel = null;
 
 function openGame(id) {
   document.getElementById('lobby').classList.remove('active');
@@ -25,15 +26,15 @@ function openGame(id) {
   if (initFn) initFn();
 
   State.updateAllBalanceDisplays();
-  loadTopbarLeaderboard(id);
-  subscribeTopbarLeaderboard(id);
+  loadSidebarLeaderboard(id);
+  subscribeSidebarLeaderboard(id);
 }
 
 function closeGame(id) {
   if (id === 'crash' && typeof crashStop === 'function') crashStop();
   if (id === 'roulette' && typeof rlCleanup === 'function') rlCleanup();
   if (id === 'leaderboard' && typeof lbCleanup === 'function') lbCleanup();
-  if (topbarLbChannel) { topbarLbChannel.unsubscribe(); topbarLbChannel = null; }
+  if (sidebarChannel) { sidebarChannel.unsubscribe(); sidebarChannel = null; }
 
   const screen = document.getElementById(id);
   if (screen) screen.classList.remove('active');
@@ -43,32 +44,38 @@ function closeGame(id) {
   currentGame = null;
 }
 
-let topbarLbChannel = null;
-
-async function loadTopbarLeaderboard(gameId) {
-  const container = document.getElementById(`topbar-lb-${gameId}`);
+async function loadSidebarLeaderboard(gameId) {
+  const container = document.getElementById(`sidebar-${gameId}`);
   if (!container) return;
   
-  const { data } = await fetchLeaderboard(3);
-  if (!data || !data.length) {
-    container.innerHTML = '';
-    return;
-  }
+  const { data } = await fetchLeaderboard(10);
   
+  container.innerHTML = `
+    <div class="sidebar-section">
+      <div class="sidebar-title">🏆 Top Players</div>
+      ${renderSidebarLB(data)}
+    </div>
+  `;
+}
+
+function renderSidebarLB(entries) {
+  if (!entries || !entries.length) {
+    return '<div class="sidebar-lb-empty">No players yet</div>';
+  }
   const medals = ['🥇', '🥈', '🥉'];
-  container.innerHTML = data.slice(0, 3).map((p, i) => `
-    <div class="topbar-lb-entry">
-      <span class="medal">${medals[i]}</span>
-      <span class="name">${p.name}</span>
-      <span class="balance">${State.fmt(p.balance)}</span>
+  return entries.map((p, i) => `
+    <div class="sidebar-lb-entry">
+      <span class="sidebar-lb-rank">${medals[i] || (i+1)}</span>
+      <span class="sidebar-lb-name">${p.name}</span>
+      <span class="sidebar-lb-balance">${State.fmt(p.balance)}</span>
     </div>
   `).join('');
 }
 
-function subscribeTopbarLeaderboard(gameId) {
-  if (topbarLbChannel) topbarLbChannel.unsubscribe();
-  topbarLbChannel = subscribeToLeaderboard(() => {
-    loadTopbarLeaderboard(gameId);
+function subscribeSidebarLeaderboard(gameId) {
+  if (sidebarChannel) sidebarChannel.unsubscribe();
+  sidebarChannel = subscribeToLeaderboard(() => {
+    loadSidebarLeaderboard(gameId);
   });
 }
 

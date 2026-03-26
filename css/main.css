@@ -236,24 +236,6 @@ html, body {
   align-items: center;
   gap: 16px;
 }
-.topbar-lb {
-  display: flex;
-  gap: 12px;
-  font-size: 0.7rem;
-  color: var(--text-muted);
-}
-.topbar-lb-entry {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 8px;
-  background: var(--bg3);
-  border-radius: var(--radius);
-  border: 1px solid var(--border2);
-}
-.topbar-lb-entry .medal { font-size: 0.9rem; }
-.topbar-lb-entry .name { max-width: 60px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.topbar-lb-entry .balance { color: var(--green2); font-weight: 500; }
 
 .game-content {
   flex: 1;
@@ -262,6 +244,153 @@ html, body {
   display: flex;
   flex-direction: column;
 }
+
+.game-layout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  gap: 0;
+}
+
+.game-main {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.game-sidebar {
+  width: 220px;
+  background: var(--bg2);
+  border-left: 1px solid var(--border);
+  padding: 16px;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+.sidebar-section {
+  margin-bottom: 20px;
+}
+
+.sidebar-title {
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.sidebar-lb-entry {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border2);
+  font-size: 0.8rem;
+}
+
+.sidebar-lb-entry:last-child { border-bottom: none; }
+
+.sidebar-lb-rank { font-size: 1rem; margin-right: 6px; }
+
+.sidebar-lb-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebar-lb-balance { color: var(--green2); font-weight: 500; }
+
+.sidebar-lb-empty { font-size: 0.75rem; color: var(--text-muted); text-align: center; padding: 20px 0; }
+
+/* ── MODAL ─────────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.modal-box {
+  background: var(--surface);
+  border: 2px solid var(--gold);
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 0 60px rgba(201,168,76,0.2);
+}
+
+.modal-icon { font-size: 3rem; margin-bottom: 16px; }
+
+.modal-box h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+
+.modal-box p {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 24px;
+}
+
+.modal-input {
+  width: 100%;
+  padding: 14px 18px;
+  background: var(--bg3);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: 'DM Mono', monospace;
+  font-size: 1rem;
+  text-align: center;
+  margin-bottom: 16px;
+  transition: border-color .2s;
+}
+
+.modal-input:focus {
+  outline: none;
+  border-color: var(--gold);
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.modal-btn {
+  flex: 1;
+  padding: 12px 20px;
+  border-radius: var(--radius);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all .2s;
+}
+
+.modal-btn.primary {
+  background: var(--gold);
+  border: none;
+  color: #000;
+  font-weight: 500;
+}
+
+.modal-btn.primary:hover { background: var(--gold2); }
+
+.modal-btn.secondary {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+}
+
+.modal-btn.secondary:hover { border-color: var(--gold-dim); color: var(--gold); }
 
 /* ── SHARED GAME UI ─────────────────────────────── */
 .bet-row {
@@ -519,26 +648,21 @@ html, body {
   font-weight: 700;
 }
 
-/* ── ROULETTE LAYOUT ────────────────────────────── */
-.rl-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  height: calc(100vh - 140px);
-  max-width: 1000px;
-  margin: 0 auto;
-}
-.rl-left {
+/* ── ROULETTE ───────────────────────────────────── */
+.rl-container {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
+  height: 100%;
 }
-.rl-wheel-section {
+
+.rl-wheel-area {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
 }
+
 .rl-live-feed {
   font-size: 0.75rem;
   color: var(--text-muted);
@@ -552,48 +676,19 @@ html, body {
 .rl-payout { padding: 2px 8px; border-radius: 4px; }
 .rl-payout.win { color: var(--green2); background: rgba(46,204,113,0.15); }
 .rl-payout.lose { color: var(--red2); background: rgba(231,76,60,0.15); }
-.rl-bet-section {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 16px;
-}
-.rl-right {
+
+.rl-table-area {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  overflow: hidden;
+  gap: 12px;
 }
-.rl-table-section {
-  flex: 1;
-  overflow: hidden;
-}
-.rl-leaderboard-section {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 12px;
-  max-height: 180px;
-  overflow-y: auto;
-}
-.rl-leaderboard { font-size: 0.75rem; }
-.rl-lb-entry {
-  display: flex;
-  justify-content: space-between;
-  padding: 6px 0;
-  border-bottom: 1px solid var(--border2);
-}
-.rl-lb-entry:last-child { border-bottom: none; }
-.rl-lb-balance { color: var(--green2); }
 
-/* ROULETTE WHEEL */
 .roulette-wheel-wrap {
   position: relative;
-  flex-shrink: 0;
 }
 .roulette-wheel {
-  width: 200px;
-  height: 200px;
+  width: 180px;
+  height: 180px;
   border-radius: 50%;
   border: 4px solid var(--gold);
   position: relative;
@@ -658,13 +753,13 @@ html, body {
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
   font-family: 'Playfair Display', serif;
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   font-weight: 700;
   color: #fff;
   text-shadow: 0 2px 6px rgba(0,0,0,0.9);
   background: rgba(0,0,0,0.7);
   border-radius: 50%;
-  width: 50px; height: 50px;
+  width: 45px; height: 45px;
   display: flex; align-items: center; justify-content: center;
   z-index: 3;
 }
@@ -674,37 +769,45 @@ html, body {
   display: flex;
   flex-direction: column;
   gap: 3px;
-  background: var(--green);
-  padding: 12px;
+  background: #0d5c36;
+  padding: 8px;
   border-radius: var(--radius);
-  border: 3px solid var(--gold);
+  border: 2px solid var(--gold);
 }
 .rl-table-row {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1.2fr 1fr 1fr 1fr;
   gap: 3px;
 }
 .rl-table-cell {
   background: var(--red);
   color: #fff;
   text-align: center;
-  padding: 10px 4px;
-  font-size: 0.85rem;
+  padding: 8px 2px;
+  font-size: 0.8rem;
   font-weight: 500;
   cursor: pointer;
   transition: all .15s;
-  border-radius: 4px;
-  min-height: 36px;
+  border-radius: 3px;
+  min-height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 .rl-table-cell:hover { filter: brightness(1.2); }
-.rl-table-cell.selected { box-shadow: 0 0 0 3px var(--gold); }
+.rl-table-cell.selected { box-shadow: 0 0 0 2px var(--gold); }
 .rl-table-cell.black-cell { background: #1a1a1a; }
 .rl-table-cell.green-cell { background: var(--green2); color: #fff; }
+.rl-table-cell.outside-cell { background: #1a5c3a; font-size: 0.7rem; }
 .rl-table-cell.empty { background: transparent; cursor: default; }
 .rl-table-cell.empty:hover { filter: none; }
+.rl-zero-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px;
+  margin-top: 3px;
+}
+.zero-cell { font-size: 1rem; font-weight: 700; }
 
 /* ROULETTE BET BUTTONS */
 .roulette-bets {

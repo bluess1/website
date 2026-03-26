@@ -44,6 +44,7 @@ const State = (() => {
   function getStats() { return { ...data.stats }; }
   function getName() { return data.playerName; }
   function setName(n) { data.playerName = n; save(); }
+  function hasName() { return data.playerName && data.playerName.trim().length > 0; }
 
   function reset() {
     data.balance = DEFAULT_BALANCE;
@@ -63,7 +64,7 @@ const State = (() => {
   }
 
   load();
-  return { getBalance, setBalance, adjustBalance, recordResult, getStats, getName, setName, reset, fmt, updateAllBalanceDisplays };
+  return { getBalance, setBalance, adjustBalance, recordResult, getStats, getName, setName, hasName, reset, fmt, updateAllBalanceDisplays };
 })();
 
 // Global helpers
@@ -85,4 +86,25 @@ function showResult(win, label, deltaText) {
 }
 function closeOverlay() {
   document.getElementById('result-overlay').classList.add('hidden');
+}
+
+// Username modal
+function showUsernameModal() {
+  if (State.hasName()) return;
+  const modal = document.getElementById('username-modal');
+  if (modal) modal.classList.remove('hidden');
+}
+function submitUsername() {
+  const input = document.getElementById('username-input');
+  const name = (input.value || '').trim();
+  if (!name) {
+    input.style.borderColor = 'var(--red2)';
+    return;
+  }
+  State.setName(name);
+  document.getElementById('username-modal').classList.add('hidden');
+}
+function skipUsername() {
+  State.setName('Guest' + Math.floor(Math.random() * 9999));
+  document.getElementById('username-modal').classList.add('hidden');
 }
