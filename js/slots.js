@@ -1,13 +1,20 @@
 // ── SLOTS ───────────────────────────────────────────
+const SYMBOLS = ['🍒','🍋','🍊','🍇','7️⃣','💎','🎰'];
+const WEIGHTS  = [30,  25,  20,  15,   6,   3,   1];
+const PAYOUTS  = { '🎰': 50, '💎': 25, '7️⃣': 20, '🍇': 8, '🍊': 6, '🍋': 4, '🍒': 3 };
+
 function initSlots() {
   const container = document.getElementById('slots-content');
   container.innerHTML = `
     <div class="slots-machine">
+
+      <div class="section-label">SPIN THE REELS</div>
       <div class="slots-reels">
         <div class="reel" id="r0">🍒</div>
         <div class="reel" id="r1">🍋</div>
         <div class="reel" id="r2">🍊</div>
       </div>
+
       <div class="bet-row">
         <span class="bet-label">BET</span>
         <input class="bet-input" id="slots-bet" type="number" min="1" max="1000" value="50" />
@@ -16,28 +23,31 @@ function initSlots() {
           <button onclick="slotsSetBet(25)">$25</button>
           <button onclick="slotsSetBet(50)">$50</button>
           <button onclick="slotsSetBet(100)">$100</button>
-          <button onclick="slotsSetBet(Math.floor(State.getBalance()/2))">½</button>
-          <button onclick="slotsSetBet(State.getBalance())">MAX</button>
+          <button onclick="slotsSetBet(Math.floor(State.getBalance()/2))">HALF</button>
+          <button onclick="slotsSetBet(State.getBalance())">ALL IN</button>
         </div>
       </div>
-      <button class="action-btn" id="slots-spin-btn" onclick="slotsSpin()" style="width:100%;margin-top:8px;">SPIN</button>
-      <div class="paytable" style="margin-top:20px">
-        <div>🎰🎰🎰 <span>JACKPOT ×50</span></div>
-        <div>💎💎💎 <span>×25</span></div>
-        <div>7️⃣7️⃣7️⃣ <span>×20</span></div>
-        <div>🍇🍇🍇 <span>×8</span></div>
-        <div>🍊🍊🍊 <span>×6</span></div>
-        <div>🍋🍋🍋 <span>×4</span></div>
-        <div>🍒🍒🍒 <span>×3</span></div>
-        <div>Any 2 match <span>×1.5</span></div>
+
+      <button class="action-btn" id="slots-spin-btn" onclick="slotsSpin()" style="width:100%;margin-bottom:24px;">
+        🎰 SPIN
+      </button>
+
+      <div class="paytable">
+        <div class="paytable-title">PAYTABLE — Match all 3 to win</div>
+        <div class="paytable-grid">
+          <div>🎰🎰🎰 JACKPOT</div><div><span>× 50</span></div>
+          <div>💎💎💎 Diamonds</div><div><span>× 25</span></div>
+          <div>7️⃣7️⃣7️⃣ Sevens</div><div><span>× 20</span></div>
+          <div>🍇🍇🍇 Grapes</div><div><span>× 8</span></div>
+          <div>🍊🍊🍊 Orange</div><div><span>× 6</span></div>
+          <div>🍋🍋🍋 Lemon</div><div><span>× 4</span></div>
+          <div>🍒🍒🍒 Cherry</div><div><span>× 3</span></div>
+          <div>Any 2 match</div><div><span>× 1.5</span></div>
+        </div>
       </div>
     </div>
   `;
 }
-
-const SYMBOLS = ['🍒','🍋','🍊','🍇','7️⃣','💎','🎰'];
-const WEIGHTS  = [30,  25,  20,  15,   6,   3,   1];
-const PAYOUTS  = { '🎰': 50, '💎': 25, '7️⃣': 20, '🍇': 8, '🍊': 6, '🍋': 4, '🍒': 3 };
 
 function weightedSymbol() {
   const total = WEIGHTS.reduce((a,b)=>a+b, 0);
@@ -51,7 +61,7 @@ function weightedSymbol() {
 
 function slotsSetBet(n) {
   const input = document.getElementById('slots-bet');
-  if (input) input.value = Math.min(n, State.getBalance());
+  if (input) input.value = Math.max(1, Math.min(Math.round(n), State.getBalance()));
 }
 
 let slotsSpinning = false;
@@ -60,18 +70,19 @@ function slotsSpin() {
   const betInput = document.getElementById('slots-bet');
   const bet = Math.floor(Number(betInput.value));
   if (!bet || bet < 1) return;
-  if (bet > State.getBalance()) { alert('Insufficient balance!'); return; }
+  if (bet > State.getBalance()) { alert('Not enough balance!'); return; }
 
   State.adjustBalance(-bet);
   slotsSpinning = true;
   const btn = document.getElementById('slots-spin-btn');
   btn.disabled = true;
+  btn.textContent = 'Spinning…';
 
   const reels = [document.getElementById('r0'), document.getElementById('r1'), document.getElementById('r2')];
   reels.forEach(r => { r.classList.add('spinning'); r.classList.remove('winner'); });
 
   const results = [weightedSymbol(), weightedSymbol(), weightedSymbol()];
-  const delays = [600, 900, 1200];
+  const delays = [700, 1050, 1400];
 
   reels.forEach((r, i) => {
     setTimeout(() => {
@@ -91,7 +102,9 @@ function evaluateSlots(results, bet, reels, btn) {
   } else if (a === b || b === c || a === c) {
     mult = 1.5;
     reels.forEach((r, i) => {
-      if ((i===0&&a===b)||(i===1&&(a===b||b===c))||(i===2&&(a===c||b===c))) r.classList.add('winner');
+      if ((i===0 && a===b) || (i===1 && (a===b||b===c)) || (i===2 && (a===c||b===c))) {
+        r.classList.add('winner');
+      }
     });
   }
 
@@ -99,8 +112,8 @@ function evaluateSlots(results, bet, reels, btn) {
   if (winnings > 0) {
     State.adjustBalance(winnings);
     State.recordResult(true, winnings - bet);
-    if (mult >= 10) showResult(true, '🎰 JACKPOT!', '+' + State.fmt(winnings - bet));
-    else if (mult > 1) showResult(true, 'YOU WIN!', '+' + State.fmt(winnings - bet));
+    if (mult >= 20) showResult(true, '🎰 JACKPOT!', '+' + State.fmt(winnings - bet));
+    else showResult(true, 'YOU WIN!', '+' + State.fmt(winnings - bet));
   } else {
     State.recordResult(false, 0);
   }
@@ -108,6 +121,7 @@ function evaluateSlots(results, bet, reels, btn) {
   setTimeout(() => {
     slotsSpinning = false;
     btn.disabled = false;
+    btn.textContent = '🎰 SPIN';
     State.updateAllBalanceDisplays();
-  }, 400);
+  }, 500);
 }
