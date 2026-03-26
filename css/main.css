@@ -59,29 +59,29 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 28px;
-  padding: 52px 24px 20px;
+  gap: 20px;
+  padding: 20px 24px 12px;
 }
 .casino-name {
   font-family: 'Playfair Display', serif;
-  font-size: clamp(2.8rem, 7vw, 4.5rem);
+  font-size: clamp(2rem, 5vw, 3rem);
   font-weight: 900;
   line-height: 1;
   text-align: center;
   color: var(--gold);
-  text-shadow: 0 0 60px rgba(201,168,76,0.35);
+  text-shadow: 0 0 40px rgba(201,168,76,0.3);
   letter-spacing: 0.1em;
 }
 .casino-name span {
   font-style: italic;
   color: var(--cream);
-  font-size: 0.55em;
-  letter-spacing: 0.45em;
+  font-size: 0.5em;
+  letter-spacing: 0.4em;
   display: block;
 }
 .header-ornament {
   color: var(--gold-dim);
-  font-size: 1.8rem;
+  font-size: 1.4rem;
   opacity: 0.6;
   animation: ornament-pulse 4s ease-in-out infinite;
 }
@@ -94,8 +94,8 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 8px 0 32px;
-  gap: 4px;
+  margin: 4px 0 16px;
+  gap: 2px;
 }
 .balance-label {
   font-size: 0.7rem;
@@ -113,22 +113,24 @@ html, body {
 
 .games-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 16px;
-  padding: 0 28px;
-  max-width: 960px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  padding: 0 24px;
+  max-width: 900px;
   margin: 0 auto;
   width: 100%;
+  flex: 1;
+  align-content: start;
 }
 
 .game-card {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: 28px 24px 24px;
+  padding: 20px 16px 16px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
   cursor: pointer;
   text-align: left;
   transition: border-color .2s, transform .2s, box-shadow .2s;
@@ -146,28 +148,28 @@ html, body {
 }
 .game-card:hover {
   border-color: rgba(201,168,76,0.55);
-  transform: translateY(-4px);
-  box-shadow: 0 16px 48px rgba(0,0,0,0.6), 0 0 40px rgba(201,168,76,0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5), 0 0 30px rgba(201,168,76,0.08);
 }
 .game-card:hover::after { opacity: 1; }
 
-.game-icon { font-size: 2.6rem; margin-bottom: 8px; }
+.game-icon { font-size: 2rem; margin-bottom: 6px; }
 .game-name {
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 500;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.15em;
   color: var(--gold);
 }
 .game-desc {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
-  line-height: 1.5;
+  line-height: 1.4;
 }
 .game-rtp {
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   color: var(--gold-dim);
   letter-spacing: 0.08em;
-  margin-top: 6px;
+  margin-top: 4px;
 }
 .leaderboard-card { border-color: rgba(201,168,76,0.3); }
 
@@ -175,8 +177,8 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
-  padding: 28px 24px 40px;
+  gap: 8px;
+  padding: 12px 24px 16px;
 }
 .reset-btn {
   background: none;
@@ -198,13 +200,11 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 18px 24px;
+  padding: 14px 24px;
   background: var(--bg2);
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
-  position: sticky;
-  top: 0;
-  z-index: 10;
+  height: 60px;
 }
 .back-btn {
   background: none;
@@ -231,13 +231,36 @@ html, body {
   color: var(--gold2);
   font-weight: 700;
 }
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.topbar-lb {
+  display: flex;
+  gap: 12px;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+.topbar-lb-entry {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: var(--bg3);
+  border-radius: var(--radius);
+  border: 1px solid var(--border2);
+}
+.topbar-lb-entry .medal { font-size: 0.9rem; }
+.topbar-lb-entry .name { max-width: 60px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.topbar-lb-entry .balance { color: var(--green2); font-weight: 500; }
 
 .game-content {
   flex: 1;
-  padding: 32px 24px 48px;
-  max-width: 720px;
-  width: 100%;
-  margin: 0 auto;
+  padding: 20px 24px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 /* ── SHARED GAME UI ─────────────────────────────── */
@@ -496,16 +519,81 @@ html, body {
   font-weight: 700;
 }
 
-/* ── ROULETTE ───────────────────────────────────── */
-.roulette-wheel-wrap {
+/* ── ROULETTE LAYOUT ────────────────────────────── */
+.rl-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  height: calc(100vh - 140px);
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.rl-left {
   display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.rl-wheel-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.rl-live-feed {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-align: center;
+  min-height: 24px;
+  display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  margin: 24px 0;
+  gap: 8px;
+}
+.rl-payout { padding: 2px 8px; border-radius: 4px; }
+.rl-payout.win { color: var(--green2); background: rgba(46,204,113,0.15); }
+.rl-payout.lose { color: var(--red2); background: rgba(231,76,60,0.15); }
+.rl-bet-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+.rl-right {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow: hidden;
+}
+.rl-table-section {
+  flex: 1;
+  overflow: hidden;
+}
+.rl-leaderboard-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+.rl-leaderboard { font-size: 0.75rem; }
+.rl-lb-entry {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border2);
+}
+.rl-lb-entry:last-child { border-bottom: none; }
+.rl-lb-balance { color: var(--green2); }
+
+/* ROULETTE WHEEL */
+.roulette-wheel-wrap {
   position: relative;
+  flex-shrink: 0;
 }
 .roulette-wheel {
-  width: 220px;
-  height: 220px;
+  width: 200px;
+  height: 200px;
   border-radius: 50%;
   border: 4px solid var(--gold);
   position: relative;
@@ -514,72 +602,111 @@ html, body {
     #1a7a4e 0deg 9.47deg,
     #0a0a0f 9.47deg 18.94deg,
     #c0392b 18.94deg 28.41deg,
-    #0a0a0f 28.41deg 37.88deg,
-    #c0392b 37.88deg 47.35deg,
-    #0a0a0f 47.35deg 56.82deg,
+    #c0392b 28.41deg 37.88deg,
+    #0a0a0f 37.88deg 47.35deg,
+    #c0392b 47.35deg 56.82deg,
     #c0392b 56.82deg 66.29deg,
     #0a0a0f 66.29deg 75.76deg,
     #c0392b 75.76deg 85.23deg,
-    #0a0a0f 85.23deg 94.7deg,
-    #c0392b 94.7deg 104.17deg,
-    #0a0a0f 104.17deg 113.64deg,
+    #c0392b 85.23deg 94.7deg,
+    #0a0a0f 94.7deg 104.17deg,
+    #c0392b 104.17deg 113.64deg,
     #c0392b 113.64deg 123.11deg,
     #0a0a0f 123.11deg 132.58deg,
     #c0392b 132.58deg 142.05deg,
-    #0a0a0f 142.05deg 151.52deg,
-    #c0392b 151.52deg 160.99deg,
-    #0a0a0f 160.99deg 170.46deg,
+    #c0392b 142.05deg 151.52deg,
+    #0a0a0f 151.52deg 160.99deg,
+    #c0392b 160.99deg 170.46deg,
     #c0392b 170.46deg 179.93deg,
     #1a7a4e 179.93deg 189.4deg,
-    #c0392b 189.4deg 198.87deg,
-    #0a0a0f 198.87deg 208.34deg,
+    #0a0a0f 189.4deg 198.87deg,
+    #c0392b 198.87deg 208.34deg,
     #c0392b 208.34deg 217.81deg,
     #0a0a0f 217.81deg 227.28deg,
     #c0392b 227.28deg 236.75deg,
-    #0a0a0f 236.75deg 246.22deg,
-    #c0392b 246.22deg 255.69deg,
-    #0a0a0f 255.69deg 265.16deg,
+    #c0392b 236.75deg 246.22deg,
+    #0a0a0f 246.22deg 255.69deg,
+    #c0392b 255.69deg 265.16deg,
     #c0392b 265.16deg 274.63deg,
     #0a0a0f 274.63deg 284.1deg,
     #c0392b 284.1deg 293.57deg,
-    #0a0a0f 293.57deg 303.04deg,
-    #c0392b 303.04deg 312.51deg,
-    #0a0a0f 312.51deg 321.98deg,
+    #c0392b 293.57deg 303.04deg,
+    #0a0a0f 303.04deg 312.51deg,
+    #c0392b 312.51deg 321.98deg,
     #c0392b 321.98deg 331.45deg,
     #0a0a0f 331.45deg 340.92deg,
     #c0392b 340.92deg 350.39deg,
-    #0a0a0f 350.39deg 360deg
+    #c0392b 350.39deg 360deg
   );
   transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 1.0);
-  box-shadow: 0 0 40px rgba(0,0,0,0.8), inset 0 0 20px rgba(0,0,0,0.5);
+  box-shadow: 0 0 30px rgba(0,0,0,0.6), inset 0 0 15px rgba(0,0,0,0.5);
 }
 .roulette-pointer {
   position: absolute;
-  top: -16px;
+  top: -14px;
   left: 50%;
   transform: translateX(-50%);
   width: 0; height: 0;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-top: 20px solid var(--gold);
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 16px solid var(--gold);
   z-index: 2;
-  filter: drop-shadow(0 0 6px rgba(201,168,76,0.5));
+  filter: drop-shadow(0 0 4px rgba(201,168,76,0.5));
 }
 .roulette-result-num {
   position: absolute;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
   font-family: 'Playfair Display', serif;
-  font-size: 2rem;
+  font-size: 1.8rem;
   font-weight: 700;
   color: #fff;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.9);
-  background: rgba(0,0,0,0.65);
+  text-shadow: 0 2px 6px rgba(0,0,0,0.9);
+  background: rgba(0,0,0,0.7);
   border-radius: 50%;
-  width: 60px; height: 60px;
+  width: 50px; height: 50px;
   display: flex; align-items: center; justify-content: center;
   z-index: 3;
 }
+
+/* ROULETTE TABLE */
+.roulette-table {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  background: var(--green);
+  padding: 12px;
+  border-radius: var(--radius);
+  border: 3px solid var(--gold);
+}
+.rl-table-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 3px;
+}
+.rl-table-cell {
+  background: var(--red);
+  color: #fff;
+  text-align: center;
+  padding: 10px 4px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .15s;
+  border-radius: 4px;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.rl-table-cell:hover { filter: brightness(1.2); }
+.rl-table-cell.selected { box-shadow: 0 0 0 3px var(--gold); }
+.rl-table-cell.black-cell { background: #1a1a1a; }
+.rl-table-cell.green-cell { background: var(--green2); color: #fff; }
+.rl-table-cell.empty { background: transparent; cursor: default; }
+.rl-table-cell.empty:hover { filter: none; }
+
+/* ROULETTE BET BUTTONS */
 .roulette-bets {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -616,6 +743,13 @@ html, body {
   border-color: var(--red2);
   background: rgba(192,57,43,0.2);
   color: var(--red2);
+}
+.roulette-bet-btn.black-btn { border-color: rgba(80,80,80,0.5); }
+.roulette-bet-btn.black-btn:hover,
+.roulette-bet-btn.black-btn.selected {
+  border-color: #888;
+  background: rgba(100,100,100,0.2);
+  color: #ccc;
 }
 .roulette-bet-btn.green-btn { border-color: rgba(26,122,78,0.5); }
 .roulette-bet-btn.green-btn:hover,

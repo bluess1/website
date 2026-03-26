@@ -1,6 +1,4 @@
 // ── MAIN NAVIGATION ──────────────────────────────────
-// Defines openGame() and closeGame() used by index.html buttons.
-
 const GAME_INITS = {
   slots:       initSlots,
   blackjack:   initBlackjack,
@@ -13,52 +11,65 @@ const GAME_INITS = {
 let currentGame = null;
 
 function openGame(id) {
-  // Hide lobby
   document.getElementById('lobby').classList.remove('active');
-
-  // Show the game screen
   const screen = document.getElementById(id);
   if (screen) screen.classList.add('active');
 
-  // Stop crash ticker if switching away
   if (currentGame === 'crash' && id !== 'crash') {
     if (typeof crashStop === 'function') crashStop();
   }
 
   currentGame = id;
 
-  // Run the game's init function to render its UI
   const initFn = GAME_INITS[id];
   if (initFn) initFn();
 
-  // Sync balance display in the topbar
   State.updateAllBalanceDisplays();
+  loadTopbarLeaderboard(id);
+  subscribeTopbarLeaderboard(id);
 }
 
 function closeGame(id) {
-  // Stop crash if leaving
-  if (id === 'crash') {
-    if (typeof crashStop === 'function') crashStop();
-  }
-  
-  // Cleanup roulette subscriptions
-  if (id === 'roulette' && typeof rlCleanup === 'function') {
-    rlCleanup();
-  }
-  
-  // Cleanup leaderboard subscriptions
-  if (id === 'leaderboard' && typeof lbCleanup === 'function') {
-    lbCleanup();
-  }
+  if (id === 'crash' && typeof crashStop === 'function') crashStop();
+  if (id === 'roulette' && typeof rlCleanup === 'function') rlCleanup();
+  if (id === 'leaderboard' && typeof lbCleanup === 'function') lbCleanup();
+  if (topbarLbChannel) { topbarLbChannel.unsubscribe(); topbarLbChannel = null; }
 
   const screen = document.getElementById(id);
   if (screen) screen.classList.remove('active');
 
-  // Show lobby and refresh balance
   document.getElementById('lobby').classList.add('active');
   State.updateAllBalanceDisplays();
   currentGame = null;
 }
 
-// Sync balance on first load
+let topbarLbChannel = null;
+
+async function loadTopbarLeaderboard(gameId) {
+  const container = document.getElementById(`topbar-lb-${gameId}`);
+  if (!container) return;
+  
+  const { data } = await fetchLeaderboard(3);
+  if (!data || !data.length) {
+    container.innerHTML = '';
+    return;
+  }
+  
+  const medals = ['🥇', '🥈', '🥉'];
+  container.innerHTML = data.slice(0, 3).map((p, i) => `
+    <div class="topbar-lb-entry">
+      <span class="medal">${medals[i]}</span>
+      <span class="name">${p.name}</span>
+      <span class="balance">${State.fmt(p.balance)}</span>
+    </div>
+  `).join('');
+}
+
+function subscribeTopbarLeaderboard(gameId) {
+  if (topbarLbChannel) topbarLbChannel.unsubscribe();
+  topbarLbChannel = subscribeToLeaderboard(() => {
+    loadTopbarLeaderboard(gameId);
+  });
+}
+
 State.updateAllBalanceDisplays();
