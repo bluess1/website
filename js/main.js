@@ -40,6 +40,16 @@ function closeGame(id) {
   if (id === 'crash') {
     if (typeof crashStop === 'function') crashStop();
   }
+  
+  // Cleanup roulette subscriptions
+  if (id === 'roulette' && typeof rlCleanup === 'function') {
+    rlCleanup();
+  }
+  
+  // Cleanup leaderboard subscriptions
+  if (id === 'leaderboard' && typeof lbCleanup === 'function') {
+    lbCleanup();
+  }
 
   const screen = document.getElementById(id);
   if (screen) screen.classList.remove('active');

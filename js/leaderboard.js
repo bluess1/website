@@ -1,5 +1,5 @@
 // ── LEADERBOARD ──────────────────────────────────────
-// All localStorage-based — no server needed!
+// Supports both localStorage (offline) and Supabase (online with realtime)
 const LB_KEY = 'velvet_leaderboard';
 
 function lbGetEntries() {
@@ -13,8 +13,7 @@ function initLeaderboard() {
   const c = document.getElementById('leaderboard-content');
   const stats = State.getStats();
   const name = State.getName();
-  const entries = lbGetEntries();
-
+  
   c.innerHTML = `
     <div class="lb-section">
       <div class="lb-title">📊 YOUR SESSION</div>
@@ -53,20 +52,47 @@ function initLeaderboard() {
         <button class="action-btn" onclick="lbSubmit()">SUBMIT</button>
       </div>
       <div class="info-text">Your balance will be submitted as your score.</div>
+      <div id="lb-submit-status" style="margin-top:8px;font-size:0.75rem;"></div>
     </div>
 
     <div class="lb-section">
-      <div class="lb-title">🎖 TOP PLAYERS</div>
-      ${lbRenderTable(entries)}
+      <div class="lb-title" id="lb-online-title">🎖 TOP PLAYERS <span id="lb-online-badge" style="font-size:0.6rem;opacity:0.7;">(loading…)</span></div>
+      <div id="lb-online-table">${lbRenderTable(lbGetEntries())}</div>
     </div>
     <div style="font-size:0.6rem;color:var(--text-muted);text-align:center;margin-top:-8px;padding-bottom:8px;">
-      Scores stored locally. For a real leaderboard, see the README for backend options.
+      Scores synced with global leaderboard
     </div>
   `;
+  
+  loadOnlineLeaderboard();
+  subscribeToOnlineLeaderboard();
+}
+
+async function loadOnlineLeaderboard() {
+  const { data, error } = await fetchLeaderboard(20);
+  if (error) {
+    document.getElementById('lb-online-badge').textContent = '(offline)';
+    lbRenderOnlineTable(lbGetEntries());
+    return;
+  }
+  
+  const badge = document.getElementById('lb-online-badge');
+  badge.textContent = '(live)';
+  badge.style.color = 'var(--green2)';
+  
+  lbRenderOnlineTable(data);
+  
+  lbSaveEntries(data);
+}
+
+function lbRenderOnlineTable(entries) {
+  const container = document.getElementById('lb-online-table');
+  if (!container) return;
+  container.innerHTML = lbRenderTable(entries);
 }
 
 function lbRenderTable(entries) {
-  if (!entries.length) return '<div class="lb-empty">No scores yet. Be the first!</div>';
+  if (!entries || !entries.length) return '<div class="lb-empty">No scores yet. Be the first!</div>';
   const medals = ['🥇','🥈','🥉'];
   return `
     <table class="lb-table">
@@ -83,7 +109,7 @@ function lbRenderTable(entries) {
           <tr>
             <td class="lb-rank">${medals[i] || (i+1)}</td>
             <td>${e.name || 'Anonymous'}</td>
-            <td style="color:var(--text-muted)">${e.games}</td>
+            <td style="color:var(--text-muted)">${e.games_played || e.games || 0}</td>
             <td>${State.fmt(e.balance)}</td>
           </tr>
         `).join('')}
@@ -92,32 +118,37 @@ function lbRenderTable(entries) {
   `;
 }
 
-function lbSubmit() {
+function subscribeToOnlineLeaderboard() {
+  subscribeToLeaderboard((payload) => {
+    if (payload.eventType === 'INSERT' || payload.eventType === 'UPDATE') {
+      loadOnlineLeaderboard();
+    }
+  });
+}
+
+function lbCleanup() {
+  unsubscribeFromLeaderboard();
+}
+
+async function lbSubmit() {
   const input = document.getElementById('lb-name-input');
+  const status = document.getElementById('lb-submit-status');
   const name = (input.value || '').trim() || 'Anonymous';
   State.setName(name);
-
-  const entries = lbGetEntries();
+  
+  status.textContent = 'Submitting…';
+  status.style.color = 'var(--gold)';
+  
   const stats = State.getStats();
-  const newEntry = {
-    name,
-    balance: State.getBalance(),
-    games: stats.gamesPlayed,
-    wins: stats.wins,
-    date: new Date().toLocaleDateString(),
-  };
-
-  // Remove old entry with same name, add new
-  const filtered = entries.filter(e => e.name.toLowerCase() !== name.toLowerCase());
-  filtered.push(newEntry);
-  filtered.sort((a,b) => b.balance - a.balance);
-  const top = filtered.slice(0, 20);
-  lbSaveEntries(top);
-
-  // Re-render
-  initLeaderboard();
-  const msg = document.createElement('div');
-  msg.style.cssText = 'color:var(--green2);font-size:0.75rem;text-align:center;margin-top:8px;';
-  msg.textContent = '✅ Score submitted!';
-  document.getElementById('leaderboard-content').appendChild(msg);
+  
+  const { data, error } = await submitScore(name, State.getBalance(), stats.gamesPlayed, stats.wins);
+  
+  if (error) {
+    status.textContent = '❌ Failed to submit. Try again.';
+    status.style.color = 'var(--red2)';
+  } else {
+    status.textContent = '✅ Score submitted!';
+    status.style.color = 'var(--green2)';
+    await loadOnlineLeaderboard();
+  }
 }
